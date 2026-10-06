@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h3 class="mb-4">Welcome, {{ profile.name }}!</h3>
+
+<!-- Accordion: Education + Skills -->
+<div class="accordion mb-4" id="dashboardAccordion">
+
+  <!-- EDUCATION -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button"
+              data-bs-toggle="collapse" data-bs-target="#educationCollapse"
+              aria-expanded="false" aria-controls="educationCollapse">
+        Education
+        <span class="badge bg-primary ms-2">{{ education_list|length }}</span>
+      </button>
+    </h2>
+    <div id="educationCollapse" class="accordion-collapse collapse">
+      <div class="accordion-body">
+        {% include '_education_list.html' with show_actions=True %}
+        <a href="{% url 'add_education' %}" class="btn btn-sm btn-primary">+ Add Education</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button"
+              data-bs-toggle="collapse" data-bs-target="#skillsCollapse"
+              aria-expanded="false" aria-controls="skillsCollapse">
+        Skills
+        <span class="badge bg-primary ms-2">{{ profile.skills.all|length }}</span>
+      </button>
+    </h2>
+    <div id="skillsCollapse" class="accordion-collapse collapse">
+      <div class="accordion-body">
+        {% for skill in profile.skills.all %}
+          <span class="badge bg-secondary fs-6 me-1 mb-1">{{ skill.name }}</span>
+        {% empty %}
+          <p class="text-muted">No skills added yet.</p>
+        {% endfor %}
+        <div class="mt-3">
+          <a href="{% url 'edit_profile' %}" class="btn btn-sm btn-primary">Edit Skills</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-item">
+  <h2 class="accordion-header">
+    <button class="accordion-button collapsed" type="button"
+            data-bs-toggle="collapse" data-bs-target="#experienceCollapse"
+            aria-expanded="false" aria-controls="experienceCollapse">
+      Experience
+      <span class="badge bg-primary ms-2">{{ experience_list|length }}</span>
+    </button>
+  </h2>
+  <div id="experienceCollapse" class="accordion-collapse collapse">
+    <div class="accordion-body">
+      {% include '_experience_list.html' with show_actions=True %}
+      <a href="{% url 'add_experience' %}" class="btn btn-sm btn-primary">+ Add Experience</a>
+    </div>
+  </div>
+</div>
+
+
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button"
+              data-bs-toggle="collapse" data-bs-target="#projectsCollapse">
+        Projects
+      </button>
+    </h2>
+    <div id="projectsCollapse" class="accordion-collapse collapse">
+      <div class="accordion-body">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- Quick Actions -->
+<div class="card mb-4">
+  <div class="card-body">
+    <h4 class="card-title text-center">Quick Actions</h4>
+    <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+    
+  </div>
+</div>
+
+<!-- Profile Details -->
+<div class="card mb-4">
+  <div class="card-body">
+    <h4 class="card-title text-center">Profile Details</h4>
+
+    <p><strong>Full Name:</strong> {{ profile.name }}</p>
+    <p><strong>Email:</strong> {{ profile.user.email }}</p>
+
+    {% if profile.contact_number %}
+      <p><strong>Phone:</strong> {{ profile.contact_number }}</p>
+    {% endif %}
+
+    {% if profile.present_address %}
+      <p><strong>Present Address:</strong> {{ profile.present_address }}</p>
+    {% endif %}
+
+    {% if profile.permanent_address %}
+      <p><strong>Permanent Address:</strong> {{ profile.permanent_address }}</p>
+    {% endif %}
+
+    {% if profile.location %}
+      <p><strong>Location:</strong> {{ profile.location }}</p>
+    {% endif %}
+
+    {% if profile.birth_date %}
+      <p><strong>Date of Birth:</strong> {{ profile.birth_date|date:"d M Y" }}</p>
+    {% endif %}
+
+    {% if profile.linkedin_profile %}
+      <p><strong>LinkedIn:</strong>
+        <a href="{{ profile.linkedin_profile }}" target="_blank">{{ profile.linkedin_profile }}</a></p>
+    {% endif %}
+
+    {% if profile.github_profile %}
+      <p><strong>GitHub:</strong>
+        <a href="{{ profile.github_profile }}" target="_blank">{{ profile.github_profile }}</a></p>
+    {% endif %}
+
+    {% if profile.bio %}
+      <p><strong>Bio:</strong> {{ profile.bio }}</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

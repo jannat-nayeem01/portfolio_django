@@ -1,0 +1,35 @@
+{% for exp in experience_list %}
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+
+      <dl class="row mb-0">
+        <dt class="col-sm-4">Job Title</dt>
+        <dd class="col-sm-8">{{ exp.job_title }}</dd>
+
+        <dt class="col-sm-4">Company</dt>
+        <dd class="col-sm-8">{{ exp.company }}</dd>
+
+        <dt class="col-sm-4">Duration</dt>
+        <dd class="col-sm-8">
+          {{ exp.start_date|date:"M Y" }} -
+          {% if exp.end_date %}{{ exp.end_date|date:"M Y" }}{% else %}Present{% endif %}
+        </dd>
+
+        {% if exp.description %}
+          <dt class="col-sm-4">Description</dt>
+          <dd class="col-sm-8">{{ exp.description|linebreaksbr }}</dd>
+        {% endif %}
+      </dl>
+
+      {% if show_actions %}
+        <div class="text-end mt-2">
+          <a href="{% url 'edit_experience' exp.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+          <a href="{% url 'delete_experience' exp.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+{% empty %}
+  <p class="text-muted mb-0">No experience added yet.</p>
+{% endfor %}

@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}CV - {{ profile.name }}{% endblock %}
+
+{% block content %}
+<style>
+  .cv-section-title {
+    border-bottom: 2px solid #212529;
+    padding-bottom: 4px;
+    margin: 28px 0 14px;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  @media print {
+    nav, .no-print, .alert { display: none !important; }
+    body { background: #fff !important; }
+    .card { border: none !important; box-shadow: none !important; }
+  }
+</style>
+
+<div class="text-end mb-3 no-print">
+  <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back</a>
+  <button onclick="window.print()" class="btn btn-primary">Print / Save as PDF</button>
+  <a href="{% url 'resume_pdf' %}" class="btn btn-success">Download PDF</a>
+</div>
+
+
+<div class="card shadow-sm">
+  <div class="card-body p-4 p-md-5">
+
+    <!-- HEADER -->
+    <div class="text-center">
+      <h2 class="mb-1">{{ profile.name }}</h2>
+      <div class="text-muted">
+        {{ profile.user.email }}
+        {% if profile.contact_number %} | {{ profile.contact_number }}{% endif %}
+        {% if profile.location %} | {{ profile.location }}{% endif %}
+      </div>
+      <div>
+        {% if profile.linkedin_profile %}
+          <a href="{{ profile.linkedin_profile }}" target="_blank">LinkedIn</a>
+        {% endif %}
+        {% if profile.linkedin_profile and profile.github_profile %} | {% endif %}
+        {% if profile.github_profile %}
+          <a href="{{ profile.github_profile }}" target="_blank">GitHub</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- OBJECTIVE -->
+    {% if profile.career_objectives %}
+      <h5 class="cv-section-title">Career Objective</h5>
+      <p>{{ profile.career_objectives|linebreaksbr }}</p>
+    {% endif %}
+
+    <!-- EXPERIENCE -->
+    <h5 class="cv-section-title">Experience</h5>
+    {% for exp in experience_list %}
+      <div class="mb-3">
+        <div class="d-flex justify-content-between">
+          <strong>{{ exp.job_title }}</strong>
+          <span class="text-muted">
+            {{ exp.start_date|date:"M Y" }} -
+            {% if exp.end_date %}{{ exp.end_date|date:"M Y" }}{% else %}Present{% endif %}
+          </span>
+        </div>
+        <div class="fst-italic">{{ exp.company }}</div>
+        {% if exp.description %}
+          <div>{{ exp.description|linebreaksbr }}</div>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p class="text-muted">No experience added.</p>
+    {% endfor %}
+
+    <!-- EDUCATION -->
+    <h5 class="cv-section-title">Education</h5>
+    {% for edu in education_list %}
+      <div class="d-flex justify-content-between mb-2">
+        <div>
+          <strong>{{ edu.degree }}</strong>
+          <div>{{ edu.institution }}</div>
+        </div>
+        <div class="text-end text-muted">
+          {{ edu.passing_year }}
+          {% if edu.gpa %}<div>GPA: {{ edu.gpa }}</div>{% endif %}
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">No education added.</p>
+    {% endfor %}
+
+    <!-- SKILLS -->
+    <h5 class="cv-section-title">Skills</h5>
+    {% for skill in skill_list %}
+      <span class="badge bg-dark fs-6 fw-normal me-1 mb-1">{{ skill.name }}</span>
+    {% empty %}
+      <p class="text-muted">No skills added.</p>
+    {% endfor %}
+
+    <!-- PERSONAL DETAILS -->
+    <h5 class="cv-section-title">Personal Details</h5>
+    <dl class="row mb-0">
+      {% if profile.birth_date %}
+        <dt class="col-sm-3">Date of Birth</dt>
+        <dd class="col-sm-9">{{ profile.birth_date|date:"d M Y" }}</dd>
+      {% endif %}
+      {% if profile.present_address %}
+        <dt class="col-sm-3">Present Address</dt>
+        <dd class="col-sm-9">{{ profile.present_address }}</dd>
+      {% endif %}
+      {% if profile.permanent_address %}
+        <dt class="col-sm-3">Permanent Address</dt>
+        <dd class="col-sm-9">{{ profile.permanent_address }}</dd>
+      {% endif %}
+    </dl>
+
+  </div>
+</div>
+{% endblock %}

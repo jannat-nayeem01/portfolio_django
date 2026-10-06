@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+
+  <!-- LEFT: form -->
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="mb-0">{{ title }}</h4>
+          {% if editing %}
+            <a href="{% url 'add_education' %}" class="btn btn-sm btn-outline-primary">+ Add new instead</a>
+          {% endif %}
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+
+          {{ form.as_p }}
+
+          <div class="d-flex justify-content-between mt-3">
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Done</a>
+            <button type="submit" class="btn btn-primary">
+              {% if editing %}Update{% else %}Save{% endif %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: list -->
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="mb-3">Your Education</h5>
+        {% include '_education_list.html' with show_actions=True %}
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
