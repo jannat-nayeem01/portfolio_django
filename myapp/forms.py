@@ -71,8 +71,6 @@ class EducationForm(forms.ModelForm):
         model = Education
         fields = ['degree', 'institution', 'passing_year', 'gpa']
         
-from django import forms
-from .models import Experience
 
 
 class ExperienceForm(forms.ModelForm):
@@ -99,6 +97,32 @@ class ExperienceForm(forms.ModelForm):
     class Meta:
         model = Experience
         fields = ['job_title', 'company', 'start_date', 'end_date', 'description']
+        
+class ProjectForm(forms.ModelForm):
+    title = forms.CharField(
+        max_length=200,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    description = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4})
+    )
+    github_link = forms.URLField(
+        required=False,
+        widget=forms.URLInput(attrs={'class': 'form-control'})
+    )
+    live_demo_link = forms.URLField(
+        required=False,
+        widget=forms.URLInput(attrs={'class': 'form-control'})
+    )
+    technologies_used = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
+    class Meta:
+        model = Project
+        fields = ['title', 'description', 'github_link', 'live_demo_link', 'technologies_used']
         
 class ContactForm(forms.Form):
     name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))

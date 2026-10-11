@@ -16,4 +16,9 @@ urlpatterns = [
     path('resume/', views.resume, name='resume'),
     path('resume/download/', views.resume_pdf, name='resume_pdf'),
     path('contact/', views.contact, name='contact'),
+    path('project/add/', views.add_project, name='add_project'),
+    path('project/edit/<int:pk>/', views.edit_project, name='edit_project'),
+    path('project/delete/<int:pk>/', views.delete_project, name='delete_project'),
+    path('contact/list/', views.contact_list, name='contact_list'),
+    
 ]

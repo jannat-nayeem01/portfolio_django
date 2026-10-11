@@ -1,0 +1,53 @@
+{% for proj in project_list %}
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+
+      <dl class="row mb-0">
+        <dt class="col-sm-4">Project Name</dt>
+        <dd class="col-sm-8">{{ proj.title }}</dd>
+
+        <dt class="col-sm-4">Description</dt>
+        <dd class="col-sm-8">{{ proj.description|default:"—" }}</dd>
+
+        <dt class="col-sm-4">Github Link</dt>
+        <dd class="col-sm-8">
+          {% if proj.github_link %}
+            <a href="{{ proj.github_link }}" target="_blank" rel="noopener noreferrer">View on Github</a>
+          {% else %}
+            <span class="text-muted">Not provided</span>
+          {% endif %}
+        </dd>
+
+        <dt class="col-sm-4">Live Demo Link</dt>
+        <dd class="col-sm-8">
+          {% if proj.live_demo_link %}
+            <a href="{{ proj.live_demo_link }}" target="_blank" rel="noopener noreferrer">View Live Demo</a>
+          {% else %}
+            <span class="text-muted">Not provided</span>
+          {% endif %}
+        </dd>
+
+        <dt class="col-sm-4">Technologies Used</dt>
+        <dd class="col-sm-8">
+          {% if proj.technologies_list %}
+            {% for tech in proj.technologies_list %}
+              <span class="badge bg-secondary fs-6 me-1 mb-1">{{ tech }}</span>
+            {% endfor %}
+          {% else %}
+            <span class="text-muted">No technologies added yet.</span>
+          {% endif %}
+        </dd>
+      </dl>
+
+      {% if show_actions %}
+        <div class="text-end mt-2">
+          <a href="{% url 'edit_project' proj.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+          <a href="{% url 'delete_project' proj.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+{% empty %}
+  <p class="text-muted mb-0">No projects added yet.</p>
+{% endfor %}

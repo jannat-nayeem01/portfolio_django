@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-4">
+  <h3 class="mb-3">Contact Messages</h3>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Subject</th>
+          <th>Message</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for msg in contact_messages %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ msg.name }}</td>
+            <td><a href="mailto:{{ msg.email }}">{{ msg.email }}</a></td>
+            <td>{{ msg.subject }}</td>
+            <td>{{ msg.message|linebreaksbr }}</td>
+            <td>{{ msg.created_at|date:"d M Y, h:i A" }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-center text-muted">No messages yet.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

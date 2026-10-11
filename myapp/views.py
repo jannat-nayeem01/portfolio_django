@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import authenticate,login,logout
 from .models import *
 from django.contrib.auth.decorators import login_required
-from .forms import ContactForm, ExperienceForm, RegistrationForm,LoginForm,ProfileForm,EducationForm
+from .forms import ContactForm, ExperienceForm, RegistrationForm,LoginForm,ProfileForm,EducationForm,ProjectForm
 
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -66,10 +66,12 @@ def dashboard(request):
     profile = get_profile(request.user)
     education_list = Education.objects.filter(profile=profile)
     experience_list = Experience.objects.filter(profile=profile)
+    project_list = Project.objects.filter(profile=profile)
     return render(request, 'dashboard.html', {
         'profile': profile,
         'education_list': education_list,
         'experience_list': experience_list,
+        'project_list': project_list,
     })
 
 @login_required
@@ -200,7 +202,58 @@ def contact(request):
 
     return render(request, 'contact.html', {'form': form})
 
+def contact_list(request):
+    if not request.user.is_authenticated:
+        messages.error(request, 'You must be logged in to view contact messages.')
+        return redirect('loginview')
 
+    contact_messages = ContactMessage.objects.all().order_by('-created_at')
+    return render(request, 'contact_list.html', {'contact_messages': contact_messages})
+
+def add_project(request):
+    profile = get_profile(request.user)
+    project_list = Project.objects.filter(profile=profile)
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            project = form.save(commit=False)
+            project.profile = profile
+            project.save()
+            messages.success(request, 'Project added successfully.')
+            return redirect('dashboard')
+    else:
+        form = ProjectForm()
+    return render(request, 'add_project.html', {'project_list': project_list,'form': form,'title': 'Add Project'})
+
+def edit_project(request, pk):
+    profile = get_profile(request.user)
+    project = get_object_or_404(Project, pk=pk, profile=profile)
+    project_list = Project.objects.filter(profile=profile)
+
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Project updated successfully.')
+            return redirect('dashboard')
+    else:
+        form = ProjectForm(instance=project)
+
+    return render(request, 'add_project.html', {
+        'form': form,
+        'title': 'Edit Project',
+        'project_list': project_list,
+        'editing': project,
+    })
+    
+def delete_project(request, pk):
+    profile = get_profile(request.user)
+    project = get_object_or_404(Project, pk=pk, profile=profile)
+    if request.method == 'POST':
+        project.delete()
+        messages.success(request, 'Project deleted successfully.')
+        return redirect('dashboard')
+    return render(request, 'confirm_delete.html', {'obj': project})
 
 
 
@@ -224,3 +277,4 @@ def resume_pdf(request):
     if result.err:
         return HttpResponse('Could not generate the PDF.', status=500)
     return response
+

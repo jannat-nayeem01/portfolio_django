@@ -72,10 +72,15 @@
       <button class="accordion-button collapsed" type="button"
               data-bs-toggle="collapse" data-bs-target="#projectsCollapse">
         Projects
+        <span class="badge bg-primary ms-2">{{ project_list|length }}</span>
       </button>
+
     </h2>
+
     <div id="projectsCollapse" class="accordion-collapse collapse">
       <div class="accordion-body">
+        {% include '_project_list.html' with show_actions=True %}
+        <a href="{% url 'add_project' %}" class="btn btn-sm btn-primary">+ Add Project</a>
       </div>
     </div>
   </div>

@@ -69,20 +69,29 @@ class Experience(models.Model):
     description = models.TextField(blank=True)
 
     class Meta:
+        
         ordering = ['-start_date']
 
     def __str__(self):
         return f"{self.job_title} at {self.company}"
 class Project(models.Model):
-    profile = models.ForeignKey(Profile,on_delete=models.CASCADE,related_name = 'projects')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='projects')
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     github_link = models.URLField(blank=True)
     live_demo_link = models.URLField(blank=True)
-    technologies_used = models.ManyToManyField(Skill, blank=True, related_name='projects')
-    
+    technologies_used = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Comma-separated, e.g. Django, PostgreSQL, Bootstrap",
+    )
+
     def __str__(self):
         return self.title
+
+    @property
+    def technologies_list(self):
+        return [t.strip() for t in self.technologies_used.split(",") if t.strip()]
     
 class Certification(models.Model):
     title = models.CharField(max_length=200)
